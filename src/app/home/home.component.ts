@@ -3,7 +3,8 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { User } from '@app/_models';
-import { UserService, AuthenticationService } from '@app/_services';
+import { File } from '@app/_models';
+import { UserService, AuthenticationService, FileService } from '@app/_services';
 
 @Component({ templateUrl: 'home.component.html' })
 export class HomeComponent implements OnInit, OnDestroy {
@@ -13,7 +14,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     constructor(
         private authenticationService: AuthenticationService,
-        private userService: UserService
+        private userService: UserService,
+        private fileService: FileService,
     ) {
         this.currentUserSubscription = this.authenticationService.currentUser.subscribe(user => {
             this.currentUser = user;
@@ -22,6 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loadAllUsers();
+        console.log(this.currentUser);
     }
 
     ngOnDestroy() {
@@ -31,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     deleteUser(id: number) {
         this.userService.delete(id).pipe(first()).subscribe(() => {
-            this.loadAllUsers()
+            this.loadAllUsers();
         });
     }
 
@@ -40,4 +43,15 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.users = users;
         });
     }
+
+    test () {
+      const file = new File;
+      file.userId = 123;
+      file.src = 'testLink';
+      console.log(file);
+      this.fileService.create(file).pipe(first()).subscribe(res => {
+        console.log(res);
+      });
+    }
 }
+
